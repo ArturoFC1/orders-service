@@ -1,0 +1,24 @@
+[project]
+name = "orders-service"
+version = "0.1.0"
+description = "Backend project"
+authors = [
+    {name = "Arturo"}
+]
+package-mode = false
+requires-python = ">=3.12,<4.0"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "black (>=26.1.0,<27.0.0)",
+    "isort (>=7.0.0,<8.0.0)",
+    "ruff (>=0.15.1,<0.16.0)",
+    "pre-commit (>=4.5.1,<5.0.0)"
+]
