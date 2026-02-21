@@ -1,6 +1,11 @@
 import json
+import random
 import re
+import time
+from contextlib import contextmanager
 from pathlib import Path
+
+from app.utils.retry import retry
 
 DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "orders.json"
 
@@ -63,7 +68,29 @@ def validar_nombre_cliente(nombre: str) -> bool:
     return bool(re.match(patron, nombre))
 
 
+def generador_por_lotes(elementos, tamaño_lote):
+    for i in range(0, len(elementos), tamaño_lote):
+        yield elementos[i : i + tamaño_lote]
+
+
+@contextmanager
+def timer(name):
+    start = time.time()
+    print(f"Iniciando {name}...")
+    yield
+    end = time.time()
+    print(f"{name} tardó {end - start:.4f} segundos")
+
+
+@retry
+def operacion_inestable():
+    if random.random() < 0.7:
+        raise ValueError("l servidor no respondio")
+    return "Conexion exitosa"
+
+
 def main():
+    print(operacion_inestable())
     pedidos = cargar_pedidos()
 
     if not pedidos:
@@ -87,6 +114,14 @@ def main():
     for order in pedidos:
         if not validar_nombre_cliente(order["cliente"]):
             print(f"\nNombre del cliente invalido en la orden: {order['id']}\n")
+
+    for batch in generador_por_lotes(pedidos, 2):
+        print("Lote: ")
+        for order in batch:
+            print(f"Orden: {order["id"]}")
+
+    with timer("Procesamiento"):
+        operacion_inestable()
 
 
 if __name__ == "__main__":
