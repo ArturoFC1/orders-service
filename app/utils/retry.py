@@ -1,6 +1,8 @@
 import time
 from functools import wraps
 
+# Esta clase define reinetentos del servidor con Wrapper
+
 
 def retry(func):
     @wraps(func)

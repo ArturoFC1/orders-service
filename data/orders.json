@@ -5,7 +5,7 @@
     "articulos": [
       {
         "nombre": "Laptop",
-        "precio": 15000,
+        "precio": 1000,
         "cantidad": 1
       },
       {

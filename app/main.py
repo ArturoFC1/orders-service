@@ -1,71 +1,12 @@
-import json
 import random
-import re
 import time
 from contextlib import contextmanager
-from pathlib import Path
 
+from app.loaders.order_loader import OrderLoader
+from app.models.order_schemas import OrderIn
+from app.services.order_service import OrderService
+from app.utils.order_mapper import entity_to_order_out, order_in_to_entity
 from app.utils.retry import retry
-
-DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "orders.json"
-
-
-def cargar_pedidos():
-    try:
-        with open(DATA_PATH, "r", encoding="utf-8") as file:
-            return json.load(file)
-
-    except FileNotFoundError:
-        print("Error: orders.json no encontrado")
-        return []
-    except json.JSONDecodeError:
-        print("Error: Formato JSON invalido")
-        return []
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-        return []
-
-
-def calcular_total_pedido(order: dict) -> float:
-    total = 0.0
-
-    for articulo in order["articulos"]:
-        if not validar_articulo(articulo):
-            print(f"Articulo invalido en la orden {order['id']}")
-            continue
-        subtotal = articulo["precio"] * articulo["cantidad"]
-        total += subtotal
-
-    return total
-
-
-def filtrar_pedidos_caros(pedidos: list, min_total: float) -> list:
-    filtro = []
-
-    for order in pedidos:
-        total = calcular_total_pedido(order)
-        if total >= min_total:
-            filtro.append(order)
-
-    return filtro
-
-
-def validar_articulo(item: dict) -> bool:
-    match item:
-        case {
-            "precio": (int() | float()) as price,
-            "cantidad": int(quantity),
-        }:
-            if price < 0 or quantity <= 0:
-                return False
-            return True
-        case _:
-            return False
-
-
-def validar_nombre_cliente(nombre: str) -> bool:
-    patron = r"^[A-Za-z\s]+$"
-    return bool(re.match(patron, nombre))
 
 
 def generador_por_lotes(elementos, tamaño_lote):
@@ -78,50 +19,63 @@ def timer(name):
     start = time.time()
     print(f"Iniciando {name}...")
     yield
-    end = time.time()
-    print(f"{name} tardó {end - start:.4f} segundos")
+    print(f"{name} tardó {time.time() - start:.4f} segundos")
 
 
 @retry
 def operacion_inestable():
     if random.random() < 0.7:
-        raise ValueError("l servidor no respondio")
+        raise ValueError("El servidor no respondio")
     return "Conexion exitosa"
+
+
+def demo_pydantic():
+    raw = {
+        "id": 99,
+        "cliente": "Test User",
+        "articulos": [{"nombre": "Teclado", "precio": 500, "cantidad": 2}],
+    }
+    order_in = OrderIn(**raw)
+    order = order_in_to_entity(order_in)
+    order_out = entity_to_order_out(order)
+    print("\nDemo Pydantic:")
+    print(order_out.model_dump())
 
 
 def main():
     print(operacion_inestable())
-    pedidos = cargar_pedidos()
+
+    pedidos = OrderLoader.cargar_pedidos()
 
     if not pedidos:
         print("No hay ordenes por procesar")
         return
     print(f"Cargados {len(pedidos)} pedidos")
 
-    print("\nTodos los pedidos: ")
+    service = OrderService(pedidos)
+
+    print("\nTodos los pedidos:")
     for order in pedidos:
-        total = calcular_total_pedido(order)
-        order["orden_total"] = total
-        print(f"Pedido {order['id']} - Cliente: {order['cliente']} - Total: ${total}")
+        order.orden_total = service.calcular_total(order)
+        print(
+            f"Pedido {order.id} - Cliente: {order.cliente} - Total: ${order.orden_total}"
+        )
 
-    pedidos_caros = filtrar_pedidos_caros(pedidos, 10000)
+    print("\nPedidos caros:")
+    for order in service.filtrar_pedidos_caros(10000):
+        print(f"Pedido {order.id} - Total: ${service.calcular_total(order)}")
 
-    print("\nPedidos caros: ")
-    for order in pedidos_caros:
-        total = calcular_total_pedido(order)
-        print(f"Pedido {order['id']} - Total: ${total}")
-
-    for order in pedidos:
-        if not validar_nombre_cliente(order["cliente"]):
-            print(f"\nNombre del cliente invalido en la orden: {order['id']}\n")
+    service.validar_clientes()
 
     for batch in generador_por_lotes(pedidos, 2):
-        print("Lote: ")
+        print("Lote:")
         for order in batch:
-            print(f"Orden: {order["id"]}")
+            print(f"Orden: {order.id}")
 
     with timer("Procesamiento"):
         operacion_inestable()
+
+    demo_pydantic()
 
 
 if __name__ == "__main__":
