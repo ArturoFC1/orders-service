@@ -1,0 +1,41 @@
+[
+  {
+    "request": {
+      "method": "GET",
+      "path": "/orders"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": "[{\"id\": 1, \"cliente\": \"Juan Perez\", \"total\": 15600.0}, {\"id\": 2, \"cliente\": \"Maria Lopez\", \"total\": 13000.0}, {\"id\": 3, \"cliente\": \"Arturo Chino\", \"total\": 11400.0}]"
+    }
+  },
+  {
+    "request": {
+      "method": "GET",
+      "path": "/orders/1"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": "{\"id\": 1, \"cliente\": \"Juan Perez\", \"total\": 15600.0}"
+    }
+  },
+  {
+    "request": {
+      "method": "GET",
+      "path": "/orders/report"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": ["application/octet-stream"]
+      },
+      "body": "id,cliente,total\n1,Juan Perez,15600.0\n2,Maria Lopez,13000.0\n3,Arturo Chino,11400.0"
+    }
+  }
+]

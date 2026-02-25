@@ -2,6 +2,7 @@ import random
 import time
 from contextlib import contextmanager
 
+from app.clients.order_client import OrderClient
 from app.loaders.csv_order_loader import CsvOrderLoader
 from app.loaders.order_loader import OrderLoader
 from app.models.order_schemas import OrderIn
@@ -58,6 +59,20 @@ def demo_csv_metricas():
     metrics.exportar_json()
 
 
+def demo_http_client():
+    logger.info("--- Demo HTTP Client ---")
+    client = OrderClient()
+
+    ordenes = client.obtener_ordenes()
+    logger.info("Ordenes obtenidas: %s", ordenes)
+
+    orden = client.obtener_orden(1)
+    logger.info("Orden 1: %s", orden)
+
+    path = client.descargar_reporte_streaming()
+    logger.info("Reporte descargado en: %s", path)
+
+
 def main():
     logger.info(operacion_inestable())
 
@@ -94,6 +109,8 @@ def main():
     demo_pydantic()
 
     demo_csv_metricas()
+
+    demo_http_client()
 
 
 if __name__ == "__main__":
