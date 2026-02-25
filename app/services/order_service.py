@@ -1,4 +1,5 @@
 from app.models.order import Order
+from app.models.type_definitions import Calculable
 from app.utils.validators import validar_nombre_cliente
 
 # Esta clase aplica logica del negocio
@@ -8,7 +9,7 @@ class OrderService:
     def __init__(self, pedidos: list[Order]):
         self.pedidos = pedidos
 
-    def calcular_total(self, order: Order) -> float:
+    def calcular_total(self, order: Calculable) -> float:
         total = 0.0
         for articulo in order.articulos:
             if not articulo.es_valido():

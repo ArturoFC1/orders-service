@@ -4,7 +4,7 @@ from app.models.order_schemas import ItemOut, OrderIn, OrderOut
 
 
 def order_in_to_entity(order_in: OrderIn) -> Order:
-    articulos = [
+    articulos: list[Item] = [
         Item(nombre=a.nombre, precio=a.precio, cantidad=a.cantidad)
         for a in order_in.articulos
     ]
@@ -12,7 +12,7 @@ def order_in_to_entity(order_in: OrderIn) -> Order:
 
 
 def entity_to_order_out(order: Order) -> OrderOut:
-    articulos_out = [
+    articulos_out: list[ItemOut] = [
         ItemOut(
             nombre=item.nombre,
             precio=item.precio,

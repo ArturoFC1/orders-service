@@ -19,5 +19,7 @@ class Order:
     def __lt__(self, other: "Order") -> bool:
         return self.calcular_total() < other.calcular_total()
 
-    def __eq__(self, other: "Order") -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Order):
+            return NotImplemented
         return self.calcular_total() == other.calcular_total()
