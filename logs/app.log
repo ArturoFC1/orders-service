@@ -1,0 +1,2 @@
+2026-02-24 20:25:19 | ERROR    | app.loaders.order_loader | Formato JSON invalido en C:\Users\BBVA\Documents\Proyecto\orders-service\data\orders.json
+2026-02-24 20:25:19 | WARNING  | __main__ | No hay ordenes por procesar

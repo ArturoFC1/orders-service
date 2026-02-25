@@ -2,11 +2,16 @@ import random
 import time
 from contextlib import contextmanager
 
+from app.loaders.csv_order_loader import CsvOrderLoader
 from app.loaders.order_loader import OrderLoader
 from app.models.order_schemas import OrderIn
+from app.services.metrics_service import MetricsService
 from app.services.order_service import OrderService
+from app.utils.logger import get_logger
 from app.utils.order_mapper import entity_to_order_out, order_in_to_entity
 from app.utils.retry import retry
+
+logger = get_logger(__name__)
 
 
 def generador_por_lotes(elementos, tamaño_lote):
@@ -17,9 +22,9 @@ def generador_por_lotes(elementos, tamaño_lote):
 @contextmanager
 def timer(name):
     start = time.time()
-    print(f"Iniciando {name}...")
+    logger.info("Iniciando %s...", name)
     yield
-    print(f"{name} tardó {time.time() - start:.4f} segundos")
+    logger.info("%s tardó %.4f segundos", name, time.time() - start)
 
 
 @retry
@@ -38,44 +43,57 @@ def demo_pydantic():
     order_in = OrderIn(**raw)
     order = order_in_to_entity(order_in)
     order_out = entity_to_order_out(order)
-    print("\nDemo Pydantic:")
-    print(order_out.model_dump())
+    logger.debug("Demo Pydantic: %s", order_out.model_dump())
+
+
+def demo_csv_metricas():
+    logger.info("--- Demo CSV y Metricas ---")
+    pedidos_csv = CsvOrderLoader.cargar_pedidos()
+
+    if not pedidos_csv:
+        logger.warning("No se pudieron cargar pedidos del CSV")
+        return
+
+    metrics = MetricsService(pedidos_csv)
+    metrics.exportar_json()
 
 
 def main():
-    print(operacion_inestable())
+    logger.info(operacion_inestable())
 
     pedidos = OrderLoader.cargar_pedidos()
 
     if not pedidos:
-        print("No hay ordenes por procesar")
+        logger.warning("No hay ordenes por procesar")
         return
-    print(f"Cargados {len(pedidos)} pedidos")
 
     service = OrderService(pedidos)
 
-    print("\nTodos los pedidos:")
+    logger.info("Todos los pedidos:")
     for order in pedidos:
         order.orden_total = service.calcular_total(order)
-        print(
-            f"Pedido {order.id} - Cliente: {order.cliente} - Total: ${order.orden_total}"
+        logger.info(
+            "Pedido %s - Cliente: %s - Total: $%.2f",
+            order.id,
+            order.cliente,
+            order.orden_total,
         )
 
-    print("\nPedidos caros:")
+    logger.info("Pedidos caros:")
     for order in service.filtrar_pedidos_caros(10000):
-        print(f"Pedido {order.id} - Total: ${service.calcular_total(order)}")
+        logger.info("Pedido %s - Total: $%.2f", order.id, service.calcular_total(order))
 
     service.validar_clientes()
 
     for batch in generador_por_lotes(pedidos, 2):
-        print("Lote:")
-        for order in batch:
-            print(f"Orden: {order.id}")
+        logger.debug("Lote: %s", [order.id for order in batch])
 
     with timer("Procesamiento"):
         operacion_inestable()
 
     demo_pydantic()
+
+    demo_csv_metricas()
 
 
 if __name__ == "__main__":

@@ -3,8 +3,9 @@ from pathlib import Path
 
 from app.models.item import Item
 from app.models.order import Order
+from app.utils.logger import get_logger
 
-# Esta clase carga datos del JSON
+logger = get_logger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_PATH = BASE_DIR / "data" / "orders.json"
@@ -17,7 +18,7 @@ class OrderLoader:
             with open(DATA_PATH, "r", encoding="utf-8") as file:
                 data = json.load(file)
 
-            return [
+            pedidos = [
                 Order(
                     id=item["id"],
                     cliente=item["cliente"],
@@ -32,13 +33,15 @@ class OrderLoader:
                 )
                 for item in data
             ]
+            logger.info("Se cargaron %d pedidos desde JSON", len(pedidos))
+            return pedidos
 
         except FileNotFoundError:
-            print("Error: orders.json no encontrado")
+            logger.error("orders.json no encontrado en %s", DATA_PATH)
             return []
         except json.JSONDecodeError:
-            print("Error: Formato JSON invalido")
+            logger.error("Formato JSON invalido en %s", DATA_PATH)
             return []
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            logger.exception("Error inesperado al cargar pedidos: %s", e)
             return []

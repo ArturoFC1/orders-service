@@ -1,0 +1,15 @@
+{
+  "total_pedidos": 3,
+  "total_vendido": 40000.0,
+  "promedio_por_pedido": 13333.333333333334,
+  "pedido_mas_caro": {
+    "id": 1,
+    "cliente": "Juan Perez",
+    "total": 15600.0
+  },
+  "por_cliente": {
+    "Juan Perez": 15600.0,
+    "Maria Lopez": 13000.0,
+    "Arturo Chino": 11400.0
+  }
+}

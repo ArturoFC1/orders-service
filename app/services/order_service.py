@@ -1,8 +1,9 @@
 from app.models.order import Order
 from app.models.type_definitions import Calculable
+from app.utils.logger import get_logger
 from app.utils.validators import validar_nombre_cliente
 
-# Esta clase aplica logica del negocio
+logger = get_logger(__name__)
 
 
 class OrderService:
@@ -13,17 +14,23 @@ class OrderService:
         total = 0.0
         for articulo in order.articulos:
             if not articulo.es_valido():
-                print(f"Articulo invalido en la orden {order.id}")
+                logger.warning("Articulo invalido en la orden %s", order.id)
                 continue
             total += articulo.subtotal()
         return total
 
     def filtrar_pedidos_caros(self, min_total: float) -> list[Order]:
-        return [
+        resultado = [
             order for order in self.pedidos if self.calcular_total(order) >= min_total
         ]
+        logger.debug(
+            "Pedidos filtrados con min_total=%.2f: %d encontrados",
+            min_total,
+            len(resultado),
+        )
+        return resultado
 
     def validar_clientes(self) -> None:
         for order in self.pedidos:
             if not validar_nombre_cliente(order.cliente):
-                print(f"\nNombre del cliente invalido en la orden: {order.id}\n")
+                logger.warning("Nombre del cliente invalido en la orden: %s", order.id)
