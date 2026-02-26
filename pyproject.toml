@@ -8,6 +8,8 @@ authors = [
 package-mode = false
 requires-python = ">=3.12,<4.0"
 dependencies = [
+    "sqlalchemy (>=2.0.47,<3.0.0)",
+    "alembic (>=1.18.4,<2.0.0)"
 ]
 
 
@@ -22,3 +24,13 @@ dev = [
     "ruff (>=0.15.1,<0.16.0)",
     "pre-commit (>=4.5.1,<5.0.0)"
 ]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.ruff]
+line-length = 88

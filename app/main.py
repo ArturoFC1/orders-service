@@ -3,6 +3,15 @@ import time
 from contextlib import contextmanager
 
 from app.clients.order_client import OrderClient
+from app.database.crud import (
+    crear_orden,
+    crear_usuario,
+    eliminar_orden,
+    obtener_ordenes_por_usuario,
+    obtener_todos_usuarios,
+)
+from app.database.engine import SessionLocal
+from app.database.models import OrderItemModel, OrderModel, User
 from app.loaders.csv_order_loader import CsvOrderLoader
 from app.loaders.order_loader import OrderLoader
 from app.models.order_schemas import OrderIn
@@ -73,6 +82,53 @@ def demo_http_client():
     logger.info("Reporte descargado en: %s", path)
 
 
+def demo_database():
+    logger.info("--- Demo Database ---")
+    session = SessionLocal()
+
+    try:
+        session.query(OrderItemModel).delete()
+        session.query(OrderModel).delete()
+        session.query(User).delete()
+        session.commit()
+
+        user1 = crear_usuario(session, "Juan Perez", "juan@example.com")
+        user2 = crear_usuario(session, "Maria Lopez", "maria@example.com")
+
+        crear_orden(
+            session,
+            user1.id,
+            [
+                {"nombre": "Laptop", "precio": 15000, "cantidad": 1},
+                {"nombre": "Mouse", "precio": 300, "cantidad": 2},
+            ],
+        )
+
+        crear_orden(
+            session,
+            user2.id,
+            [
+                {"nombre": "Monitor", "precio": 4000, "cantidad": 2},
+            ],
+        )
+
+        usuarios = obtener_todos_usuarios(session)
+        for user in usuarios:
+            ordenes = obtener_ordenes_por_usuario(session, user.id)
+            for order in ordenes:
+                logger.info(
+                    "User: %s | Orden %d | Total: $%.2f",
+                    user.nombre,
+                    order.id,
+                    order.total(),
+                )
+
+        eliminar_orden(session, 1)
+
+    finally:
+        session.close()
+
+
 def main():
     logger.info(operacion_inestable())
 
@@ -111,6 +167,8 @@ def main():
     demo_csv_metricas()
 
     demo_http_client()
+
+    demo_database()
 
 
 if __name__ == "__main__":
