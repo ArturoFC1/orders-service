@@ -1,3 +1,4 @@
+import asyncio
 import random
 import time
 from contextlib import contextmanager
@@ -15,6 +16,12 @@ from app.database.models import OrderItemModel, OrderModel, User
 from app.loaders.csv_order_loader import CsvOrderLoader
 from app.loaders.order_loader import OrderLoader
 from app.models.order_schemas import OrderIn
+from app.services.concurrencia_service import (
+    calcular_primos_paralelo,
+    calcular_primos_secuencial,
+    fetch_all_async,
+    fetch_all_sync,
+)
 from app.services.metrics_service import MetricsService
 from app.services.order_service import OrderService
 from app.utils.logger import get_logger
@@ -129,6 +136,26 @@ def demo_database():
         session.close()
 
 
+def demo_concurrencia():
+    logger.info("--- Demo Concurrencia ---")
+
+    order_ids = [1, 2, 3, 4, 5]
+
+    logger.info("Fetch sincrono:")
+    fetch_all_sync(order_ids)
+
+    logger.info("Fetch asincrono:")
+    asyncio.run(fetch_all_async(order_ids))
+
+    limites = [500_000, 1_000_000, 2_000_000, 500_000]
+
+    logger.info("Calculo de primos secuencial:")
+    calcular_primos_secuencial(limites)
+
+    logger.info("Calculo de primos paralelo:")
+    calcular_primos_paralelo(limites)
+
+
 def main():
     logger.info(operacion_inestable())
 
@@ -169,6 +196,8 @@ def main():
     demo_http_client()
 
     demo_database()
+
+    demo_concurrencia()
 
 
 if __name__ == "__main__":
