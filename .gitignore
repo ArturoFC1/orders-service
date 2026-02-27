@@ -5,3 +5,4 @@ env/
 logs/
 reports/
 test.db
+htmlcov/

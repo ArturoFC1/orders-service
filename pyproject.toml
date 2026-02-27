@@ -31,7 +31,9 @@ dev = [
     "black (>=26.1.0,<27.0.0)",
     "isort (>=7.0.0,<8.0.0)",
     "ruff (>=0.15.1,<0.16.0)",
-    "pre-commit (>=4.5.1,<5.0.0)"
+    "pre-commit (>=4.5.1,<5.0.0)",
+    "hypothesis (>=6.151.9,<7.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)"
 ]
 
 [tool.black]
@@ -43,3 +45,14 @@ line_length = 88
 
 [tool.ruff]
 line-length = 88
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/main.py"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 35

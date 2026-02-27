@@ -1,0 +1,4 @@
+# file: C:\Users\BBVA\Documents\Proyecto\orders-service\app\utils\logger.py
+# hypothesis_version: 6.151.9
+
+['%Y-%m-%d %H:%M:%S', 'logs/app.log', 'utf-8']
