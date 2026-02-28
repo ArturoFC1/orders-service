@@ -1,2 +1,6 @@
 2026-02-24 20:25:19 | ERROR    | app.loaders.order_loader | Formato JSON invalido en C:\Users\BBVA\Documents\Proyecto\orders-service\data\orders.json
 2026-02-24 20:25:19 | WARNING  | __main__ | No hay ordenes por procesar
+2026-02-27 17:48:49 | WARNING  | app.services.order_domain_service | Orden 1 no encontrada
+2026-02-27 17:48:49 | WARNING  | app.services.order_domain_service | Orden 999 no encontrada
+2026-02-27 18:21:01 | WARNING  | app.services.order_domain_service | Orden 1 no encontrada
+2026-02-27 18:21:01 | WARNING  | app.services.order_domain_service | Orden 999 no encontrada
