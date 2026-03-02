@@ -15,6 +15,7 @@ from app.database.engine import SessionLocal
 from app.database.models import OrderItemModel, OrderModel, User
 from app.loaders.csv_order_loader import CsvOrderLoader
 from app.loaders.order_loader import OrderLoader
+from app.ml.order_classifier import entrenar_modelo, predecir
 from app.models.order_schemas import OrderIn
 from app.services.concurrencia_service import (
     calcular_primos_paralelo,
@@ -156,6 +157,26 @@ def demo_concurrencia():
     calcular_primos_paralelo(limites)
 
 
+def demo_ml():
+    logger.info("--- Demo Machine Learning ---")
+    entrenar_modelo()
+
+    casos = [
+        {"total": 15000, "num_items": 1, "precio_promedio": 15000},
+        {"total": 500, "num_items": 2, "precio_promedio": 250},
+        {"total": 12000, "num_items": 3, "precio_promedio": 4000},
+    ]
+
+    for caso in casos:
+        resultado = predecir(**caso)
+        logger.info(
+            "Total: $%d | Es cara: %s | Prob: %.2f%%",
+            caso["total"],
+            resultado["es_cara"],
+            resultado["probabilidad_cara"] * 100,
+        )
+
+
 def main():
     logger.info(operacion_inestable())
 
@@ -198,6 +219,8 @@ def main():
     demo_database()
 
     demo_concurrencia()
+
+    demo_ml()
 
 
 if __name__ == "__main__":

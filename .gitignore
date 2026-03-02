@@ -6,3 +6,4 @@ logs/
 reports/
 test.db
 htmlcov/
+models/
