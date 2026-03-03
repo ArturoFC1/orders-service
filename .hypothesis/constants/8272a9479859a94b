@@ -1,0 +1,4 @@
+# file: C:\Users\BBVA\Documents\Proyecto\orders-service\app\infrastructure\api\routers\auth.py
+# hypothesis_version: 6.151.9
+
+[400, 401, '/auth', '/login', '/register', 'Email ya registrado', 'Login exitoso: %s', 'access_token', 'auth', 'auto', 'bcrypt', 'bearer', 'email', 'exp', 'id', 'nombre', 'sub', 'token_type']

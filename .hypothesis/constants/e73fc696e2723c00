@@ -1,0 +1,4 @@
+# file: C:\Users\BBVA\Documents\Proyecto\orders-service\app\infrastructure\database\models.py
+# hypothesis_version: 6.151.9
+
+[100, 255, 'OrderItemModel', 'OrderModel', 'User', 'all, delete-orphan', 'items', 'order', 'order_items', 'orders', 'orders.id', 'user', 'users', 'users.id']

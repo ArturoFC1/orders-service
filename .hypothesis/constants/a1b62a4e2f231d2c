@@ -1,0 +1,4 @@
+# file: C:\Users\BBVA\Documents\Proyecto\orders-service\app\application\use_cases\order_use_cases.py
+# hypothesis_version: 6.151.9
+
+['Orden %d eliminada', 'cantidad', 'nombre', 'precio']

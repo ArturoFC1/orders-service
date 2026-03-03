@@ -3,8 +3,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.api.dependencies import get_db
-from app.database.base import Base
+from app.infrastructure.api.dependencies import get_db
+from app.infrastructure.database.base import Base
 from main_api import app
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -12,6 +12,8 @@ engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 TestingSessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+
+Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
@@ -27,9 +29,9 @@ app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(autouse=True)
 def clean_db():
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield
-    Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture
@@ -95,10 +97,11 @@ def test_crear_orden(client, auth_headers):
     response = client.post(
         "/orders/",
         json={
+            "cliente": "Test User",
             "items": [
                 {"nombre": "Laptop", "precio": 15000, "cantidad": 1},
                 {"nombre": "Mouse", "precio": 300, "cantidad": 2},
-            ]
+            ],
         },
         headers=auth_headers,
     )
@@ -109,7 +112,10 @@ def test_crear_orden(client, auth_headers):
 def test_listar_ordenes(client, auth_headers):
     client.post(
         "/orders/",
-        json={"items": [{"nombre": "Laptop", "precio": 15000, "cantidad": 1}]},
+        json={
+            "cliente": "Test User",
+            "items": [{"nombre": "Laptop", "precio": 15000, "cantidad": 1}],
+        },
         headers=auth_headers,
     )
     response = client.get("/orders/", headers=auth_headers)
@@ -120,7 +126,10 @@ def test_listar_ordenes(client, auth_headers):
 def test_eliminar_orden(client, auth_headers):
     order = client.post(
         "/orders/",
-        json={"items": [{"nombre": "Laptop", "precio": 15000, "cantidad": 1}]},
+        json={
+            "cliente": "Test User",
+            "items": [{"nombre": "Laptop", "precio": 15000, "cantidad": 1}],
+        },
         headers=auth_headers,
     ).json()
     response = client.delete(f"/orders/{order['id']}", headers=auth_headers)

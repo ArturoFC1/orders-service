@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import auth, orders
+from app.infrastructure.api.routers import auth, orders
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)

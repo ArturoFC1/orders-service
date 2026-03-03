@@ -1,4 +1,6 @@
-from app.adapters.memory_order_repository import MemoryOrderRepository
+from app.infrastructure.repositories.memory_order_repository import (
+    MemoryOrderRepository,
+)
 from app.models.item import Item
 from app.models.order import Order
 from app.patterns.cached_repository import CachedOrderRepository

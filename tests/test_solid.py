@@ -1,7 +1,9 @@
-from app.adapters.memory_order_repository import MemoryOrderRepository
+from app.domain.ports.order_repository import OrderRepositoryPort
+from app.infrastructure.repositories.memory_order_repository import (
+    MemoryOrderRepository,
+)
 from app.models.item import Item
 from app.models.order import Order
-from app.ports.order_repository import OrderRepositoryPort
 from app.services.order_domain_service import OrderDomainService
 
 

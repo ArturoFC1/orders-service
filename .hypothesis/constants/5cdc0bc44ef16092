@@ -1,0 +1,4 @@
+# file: C:\Users\BBVA\Documents\Proyecto\orders-service\app\infrastructure\api\routers\orders.py
+# hypothesis_version: 6.151.9
+
+[404, '/', '/orders', '/{order_id}', 'Orden no encontrada', 'orders']

@@ -1,0 +1,4 @@
+# file: C:\Users\BBVA\Documents\Proyecto\orders-service\app\infrastructure\notifications\http_notification_adapter.py
+# hypothesis_version: 6.151.9
+
+[3.0, 'cliente', 'event', 'order_created', 'order_id', 'total']
