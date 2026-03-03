@@ -7,8 +7,8 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import ALGORITHM, SECRET_KEY, get_db
-from app.database.models import User
+from app.infrastructure.api.dependencies import ALGORITHM, SECRET_KEY, get_db
+from app.infrastructure.database.models import User
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)

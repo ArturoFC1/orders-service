@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from app.database.models import OrderItemModel, OrderModel
-from app.models.item import Item
-from app.models.order import Order
+from app.domain.entities.item import Item
+from app.domain.entities.order import Order
+from app.infrastructure.database.models import OrderItemModel, OrderModel
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -51,4 +51,5 @@ class SqlOrderRepository:
             Item(nombre=i.nombre, precio=i.precio, cantidad=i.cantidad)
             for i in om.items
         ]
-        return Order(id=om.id, cliente=om.user.nombre, articulos=articulos)
+        cliente = om.user.nombre if om.user else f"User_{om.user_id}"
+        return Order(id=om.id, cliente=cliente, articulos=articulos)

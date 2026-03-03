@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.database.models import OrderItemModel, OrderModel, User
+from app.infrastructure.database.models import OrderItemModel, OrderModel, User
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)

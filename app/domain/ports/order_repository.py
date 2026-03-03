@@ -1,6 +1,6 @@
 from typing import Protocol, runtime_checkable
 
-from app.models.order import Order
+from app.domain.entities.order import Order
 
 
 @runtime_checkable

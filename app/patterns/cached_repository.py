@@ -1,5 +1,5 @@
+from app.domain.ports.order_repository import OrderRepositoryPort
 from app.models.order import Order
-from app.ports.order_repository import OrderRepositoryPort
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)

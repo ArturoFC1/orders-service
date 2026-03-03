@@ -1,4 +1,4 @@
-from app.models.order import Order
+from app.domain.entities.order import Order
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)

@@ -4,15 +4,15 @@ import time
 from contextlib import contextmanager
 
 from app.clients.order_client import OrderClient
-from app.database.crud import (
+from app.infrastructure.database.crud import (
     crear_orden,
     crear_usuario,
     eliminar_orden,
     obtener_ordenes_por_usuario,
     obtener_todos_usuarios,
 )
-from app.database.engine import SessionLocal
-from app.database.models import OrderItemModel, OrderModel, User
+from app.infrastructure.database.engine import SessionLocal
+from app.infrastructure.database.models import OrderItemModel, OrderModel, User
 from app.loaders.csv_order_loader import CsvOrderLoader
 from app.loaders.order_loader import OrderLoader
 from app.ml.order_classifier import entrenar_modelo, predecir
